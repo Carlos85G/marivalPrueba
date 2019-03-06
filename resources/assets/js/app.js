@@ -15,7 +15,16 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+library.add(faCoffee);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
 Vue.component('example', require('./components/Example.vue'));
+Vue.component('usuarios-lista', require('./components/UsuariosLista.vue'));
 
 const app = new Vue({
     el: '#app'
