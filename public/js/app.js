@@ -44501,7 +44501,7 @@ var render = function() {
     "div",
     { staticClass: "row" },
     [
-      _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
+      _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "panel panel-default" }, [
           _c("div", { staticClass: "panel-heading clearfix" }, [
             _c("span", { staticClass: "h3" }, [

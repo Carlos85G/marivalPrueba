@@ -66,8 +66,22 @@
                 </div>
             </div>
         </nav>
-
-        @yield('content')
+        <div class="container-fluid">
+            <div class="col-md-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <img src="{{ route('usuarios.foto', Auth::user()->id) }}" alt="Usuario autenticado" class="img-circle img-responsive" />
+                    </div>
+                    <div class="panel-body">
+                        <h5>{{ Auth::user()->puesto }}</h5>
+                        <h6>{{ Auth::user()->email }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                @yield('content')
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
