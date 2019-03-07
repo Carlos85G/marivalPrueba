@@ -36,8 +36,8 @@ class UsuariosController extends Controller
      */
     public function index(Request $request)
     {
-        /* Obtener datos para mantener programación DRY */
-        $datos = User::all();
+        /* Obtener datos para mantener programación DRY. Limitar a 3 */
+        $datos = User::paginate(3);
 
         /* Mandar la información en AJAX */
         if ($request->ajax()) {

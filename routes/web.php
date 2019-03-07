@@ -22,6 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 /* Rutas de backend: usuarios */
 Route::get('usuarios', 'UsuariosController@index')->name('usuarios');
+/*Route::get('usuarios/pagina/{pagina}', 'UsuariosController@index')->name('usuarios.paginado');*/
 Route::get('usuarios/nuevo', 'UsuariosController@create')->name('usuarios.nuevo');
 Route::post('usuarios', 'UsuariosController@store')->name('usuarios.guardar');
 Route::get('usuarios/{id}', 'UsuariosController@show')->name('usuarios.ver');

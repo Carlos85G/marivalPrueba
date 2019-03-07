@@ -36,7 +36,7 @@
                 <div class="col-md-8">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <div class="col-md-6 hidden-sm">
+                            <div class="col-md-6 hidden-sm hidden-xs">
                                 <img src="{{ URL::asset('/img/marival1.png') }}" alt="Hotel Marival" class="img-responsive float-left" />
                             </div>
                             <div class="col-md-6">
@@ -78,8 +78,8 @@
                                             </button>
 
                                             <button type="submit" class="btn btn-primary">
-                                                Iniciar sesi&oacute;n
-                                                <i class="fa fa-chevron-right"></i>
+                                                Entrar
+                                                <i class="glyphicon glyphicon-chevron-right"></i>
                                             </button>
                                         </div>
                                     </div>
