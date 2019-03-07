@@ -56,7 +56,7 @@ class User extends Authenticatable
     */
     public static function fotografiaPredeterminada()
     {
-        return self::generarUrlFotografiaByCodigo(0);
+        return self::generarUrlFotografiaById(0);
     }
 
     /**

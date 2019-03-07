@@ -25,7 +25,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('usuarios-lista', require('./components/UsuariosLista.vue'));
 Vue.component('usuarios-usuario', require('./components/UsuariosUsuario.vue'));
-//Vue.component('usuario-editor', require('./components/UsuarioEditor.vue'));
+Vue.component('usuario-editor', require('./components/UsuarioEditor.vue'));
 
 const app = new Vue({
     el: '#app'

@@ -6,7 +6,7 @@
                     <span class="h3">Lista de usuarios registrados</span>
                     <div class="pull-right">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-info btn-lg" aria-expanded="false">
+                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#editor" data-backdrop="static" data-keyboard="false" v-on:click="crearRegistroUsuario()">
                                 Nuevo
                                 <i class="glyphicon glyphicon-plus"></i>
                             </button>
@@ -24,20 +24,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <usuarios-usuario v-for="(usuario, index) in datosPaginacion.data" :key="usuario.id" :usuario="usuario" @eliminarRegistro="eliminarRegistroUsuario(index)"></usuarios-usuario>
+                            <usuarios-usuario v-for="(usuario, index) in datosPaginacion.data" :key="usuario.id" :usuario="usuario" @eliminarRegistro="eliminarRegistroUsuario(index)" @editarRegistro="editarRegistroUsuario(usuario)"></usuarios-usuario>
                         </tbody>
                     </table>
-                    <pagination :data="datosPaginacion" @pagination-change-page="obtenerResultados"></pagination>
+                    <div class="pull-right">
+                        <pagination :data="datosPaginacion" :limit="3" @pagination-change-page="obtenerResultados"></pagination>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <usuario-editor :datosUsuario="datosUsuario" v-on:recargar="recargarDatos()"></usuario-editor>
     </div>
 </template>
+
 <script>
     export default {
         data(){
             return {
-                datosPaginacion: {}
+                datosPaginacion: {},
+                datosUsuario: null
             }
         },
         mounted() {
@@ -45,12 +51,22 @@
         },
         methods:{
             eliminarRegistroUsuario(index){
-                console.log('eliminando del DOM');
                 this.datosPaginacion.data.splice(index, 1);
                 this.obtenerResultados(this.datosPaginacion.current_page);
             },
+            editarRegistroUsuario(data){
+                this.datosUsuario = data;
+            },
+            crearRegistroUsuario(){
+                this.datosUsuario = null;
+            },
             obtenerResultados(page = 1){
                 axios.get('/usuarios?page=' + page).then(response => (this.datosPaginacion = response.data));
+            },
+            recargarDatos(){
+                $('#editor').modal('hide');
+                this.datosUsuario = null;
+                this.obtenerResultados(this.datosPaginacion.current_page);
             }
         }
     }

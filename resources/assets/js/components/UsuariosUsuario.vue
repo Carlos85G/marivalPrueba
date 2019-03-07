@@ -3,8 +3,8 @@
         <th scope="row">{{ usuario.id }}</th>
         <td>{{ usuario.name }}</td>
         <td>{{ usuario.email }}</td>
-        <td>
-            <button class="btn btn-info" v-on:click="editarUsuario()">Editar</button>
+        <td class="text-right">
+            <button class="btn btn-info" v-on:click="editarUsuario()" data-toggle="modal" data-target="#editor" data-backdrop="static" data-keyboard="false">Editar</button>
             <button class="btn btn-danger" v-on:click="eliminarUsuario()">Eliminar</button>
         </td>
     </tr>
@@ -17,9 +17,6 @@
             return {
             }
         },
-        mounted() {
-            console.log('Usuario cargado');
-        },
         methods:{
             eliminarUsuario(){
                 axios.delete('/usuarios/' + this.usuario.id + '/eliminar').then(
@@ -27,7 +24,7 @@
                 );
             },
             editarUsuario(){
-
+                this.$emit('editarRegistro', this.usuario);
             }
         }
     }

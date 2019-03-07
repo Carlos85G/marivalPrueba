@@ -36,18 +36,8 @@ class UsuariosController extends Controller
      */
     public function index(Request $request)
     {
-        /* Obtener datos para mantener programación DRY. Limitar a 3 */
-        $datos = User::paginate(3);
-
-        /* Mandar la información en AJAX */
-        if ($request->ajax()) {
-            return $datos->toJson();
-        }
-
-        /* Ejecuta sólo si la petición es regular */
-        return view('crud', [
-            'datos' => $datos
-        ]);
+        /* Obtener datos para mantener programación DRY. Limitar a 5 */
+        return User::paginate(5)->toJson();
     }
 
     /**
@@ -57,10 +47,7 @@ class UsuariosController extends Controller
      */
     public function create()
     {
-        return view('usuarios.editor', [
-            'usuario' => null,
-            'editar' => true
-        ]);
+        //
     }
 
     /**
@@ -82,10 +69,7 @@ class UsuariosController extends Controller
      */
     public function show($id)
     {
-        return view('usuarios.editor', [
-            'usuario' => User::find($id),
-            'editar' => false
-        ]);
+        //
     }
 
     /**
@@ -96,10 +80,7 @@ class UsuariosController extends Controller
      */
     public function edit($id)
     {
-        return view('usuarios.editor', [
-            'usuario' => User::find($id),
-            'editar' => true
-        ]);
+        //
     }
 
     /**
@@ -194,9 +175,6 @@ class UsuariosController extends Controller
      */
     public function dismiss(Request $request, $id)
     {
-        /* Retorno regular de direccion */
-        $retorno = redirect()->route('usuarios');
-
         /* Validación exitosa. Continuar cono inicio de transacción */
         DB::beginTransaction();
 
@@ -209,7 +187,9 @@ class UsuariosController extends Controller
                 /* Deshacer cambios en base de datos */
                 DB::rollback();
 
-                return $retorno->with('fatal', '<p>No es posible eliminar el usuario actualmente en uso. Por favor, contacte a su administrador.</p>');
+                return response()->json([
+                    'fatal' => 'No es posible eliminar el usuario actualmente en uso. Por favor, contacte a su administrador.'
+                ], 403);
             }
 
             /* Eliminar usuario */
@@ -221,10 +201,12 @@ class UsuariosController extends Controller
             /* Deshacer cambios en base de datos */
             DB::rollback();
 
-            return $retorno->with('fatal', "<p>No fue posible eliminar el usuario porque hubo un fallo en el servidor. Por favor, contacte a su administrador.</p>");
+            return response()->json([
+                'fatal' => 'No fue posible eliminar el usuario porque hubo un fallo en el servidor. Por favor, contacte a su administrador.'
+            ], 500);
         }
 
-        return $retorno->with('listo', '<p>Los conflictos fueron resueltos y el usuario ha sido eliminado correctamente.</p>');
+        return response('1', 200);
     }
 
     /**
@@ -240,13 +222,13 @@ class UsuariosController extends Controller
         $esUsuariable = !is_null($usuariable);
 
         return Validator::make($request->all(), [
-            'email' => 'required|email|max:255|unique:users,email,'.($esUsuariable? $usuariable->id : 'NULL').',id,deleted_at,NULL',
+            'email' => 'required|email|max:255|unique:users,email,'.($esUsuariable? $usuariable->id : 'NULL').',id',
             'password' => ($esUsuariable? 'sometimes|nullable' : 'required').'|min:6|confirmed',
             'puesto' => 'required|max:191',
-            'nombre' => 'required|max:191',
+            'name' => 'required|max:191',
             'fotografia' => 'nullable|image',
         ])->setAttributeNames([
-            'fotografia' => 'fotograf&iacute;a',
+            'fotografia' => 'fotografía',
         ]);
     }
 
@@ -257,14 +239,14 @@ class UsuariosController extends Controller
      * @param  int|NULL  $id
      * @return \Illuminate\Http\Response
      */
-    private function escribir(Request $request, $id = null)
+    private function escribir($request, $id = null)
     {
-        $esId = !is_null($id);
-        $retorno = $esId? redirect()->route('usuarios.editar', $id) : redirect()->route('usuarios.nuevo');
         $validador = $this->crearValidador($request, $id);
 
         if ($validador->fails()) {
-            return $retorno->withErrors($validador)->withInput();
+            return response()->json([
+                'errors' => $validador->errors()
+            ], 400);
         }
 
         /* Inicio de transacción */
@@ -280,7 +262,7 @@ class UsuariosController extends Controller
             /* Si no hay registro, crear */
             if (is_null($usuario)) {
                 /* Crear usuario y asignar usuariable */
-                $usuario = Usuario::create($usuarioValores);
+                $usuario = User::create($usuarioValores);
             } else {
                 /* Actualizar datos con información actual */
                 $usuario->fill($usuarioValores)->save();
@@ -303,10 +285,12 @@ class UsuariosController extends Controller
             /* Deshacer cambios en base de datos */
             DB::rollback();
 
-            /* Retornar con error */
-            return $retorno->with('fatal', 'Hubo errores al procesar la consulta. Por favor, contacte a su administrador.')->withInput();
+            /* Retornar con error 500 */
+            return response()->json([
+                'fatal' => 'Hubo errores al procesar la consulta. Por favor, contacte a su administrador.'
+            ], 500);
         }
 
-        return $retorno->with('listo', ($esCodigo? 'La informaci&oacute;n del usuario con ID ' . $usuario->id . ' ha sido actualizado.' : 'El usuario con ID ' . $usuario->id . ' ha sido guardado. <a href="'.route('usuarios.editar', $usuario->id).'" class="alert-link">Haga clic aqu&iacute; para editarlo.</a>'));
+        return response('1', 200);
     }
 }
